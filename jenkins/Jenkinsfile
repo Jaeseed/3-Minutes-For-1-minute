@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    environment {
+        PATH = "$PATH:/var/run"
+    }
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    try {
+                        sh 'docker-compose build'
+                    } catch(e) {
+                        currentBuild.result = "FAILURE"
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script{
+                    try {
+                        sh 'docker-compose up -d'
+                    } catch(e) {
+                        currentBuild.result = "FAILURE"
+                    }
+                }
+            }
+        }
+    }
+}
